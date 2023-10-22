@@ -2254,6 +2254,24 @@ class _DeleteTextAction<T extends DirectionalTextEditingIntent>
       );
     }
 
+    final child = state.controller.document.queryChild(selection.baseOffset);
+    if (intent.forward == false && // only works on backward delete
+        (child.node != null || child.node!.parent != null)) {
+      final parentBlock = child.node!.parent!;
+
+      final attributes = [Attribute.ol, Attribute.ul, Attribute.checked];
+      for (final attr in attributes) {
+        if (child.offset == 0 &&
+            parentBlock.style.containsKey(attr.key) &&
+            parentBlock.style.attributes[attr.key]?.value == attr.value) {
+          return Actions.invoke(
+            context!,
+            ToggleTextStyleIntent(attr),
+          );
+        }
+      }
+    }
+
     return Actions.invoke(
       context!,
       ReplaceTextIntent(
