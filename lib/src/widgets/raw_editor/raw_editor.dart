@@ -1717,6 +1717,11 @@ class RawEditorState extends EditorState
       _UpdateTextSelectionToAdjacentLineAction<
           ExtendSelectionVerticallyToAdjacentLineIntent>(this);
 
+  late final _UpdateTextSelectionToAdjacentLineAction<
+          ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>
+      _adjacentParagraphAction = _UpdateTextSelectionToAdjacentLineAction<
+          ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent>(this);
+
   late final _ToggleTextStyleAction _formatSelectionAction =
       _ToggleTextStyleAction(this);
 
@@ -1763,6 +1768,9 @@ class RawEditorState extends EditorState
             this, true, _documentBoundary)),
     ExtendSelectionToNextWordBoundaryOrCaretLocationIntent: _makeOverridable(
         _ExtendSelectionOrCaretPositionAction(this, _nextWordBoundary)),
+
+    ExtendSelectionToNextParagraphBoundaryOrCaretLocationIntent:
+        _makeOverridable(_adjacentParagraphAction),
 
     // Extend/Move selection for Mac
     // if mac
