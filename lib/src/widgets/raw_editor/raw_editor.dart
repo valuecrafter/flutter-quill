@@ -755,17 +755,19 @@ class RawEditorState extends EditorState
 
     const olKeyPhrase = '1.';
     const ulKeyPhrase = ['-', '*', '+'];
+    const checkedKeyPhrase = '[]';
 
     for (final ulKey in ulKeyPhrase) {
-      if (text.value.startsWith(ulKey) &&
-          line.style.containsKey(Attribute.ul.key) == false) {
+      if (text.value.startsWith(ulKey)) {
         _updateSelectionForKeyPhrase(ulKey, Attribute.ul);
         return KeyEventResult.handled;
       }
     }
-    if (text.value.startsWith(olKeyPhrase) &&
-        line.style.containsKey(Attribute.ol.key) == false) {
+    if (text.value.startsWith(olKeyPhrase)) {
       _updateSelectionForKeyPhrase(olKeyPhrase, Attribute.ol);
+      return KeyEventResult.handled;
+    } else if (text.value.startsWith(checkedKeyPhrase)) {
+      _updateSelectionForKeyPhrase(checkedKeyPhrase, Attribute.unchecked);
       return KeyEventResult.handled;
     }
 
