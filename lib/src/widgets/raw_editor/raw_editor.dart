@@ -754,19 +754,22 @@ class RawEditorState extends EditorState
     }
 
     const olKeyPhrase = '1.';
-    const ulKeyPhrase = '-';
+    const ulKeyPhrase = ['-', '*', '+'];
 
+    for (final ulKey in ulKeyPhrase) {
+      if (text.value.startsWith(ulKey) &&
+          line.style.containsKey(Attribute.ul.key) == false) {
+        _updateSelectionForKeyPhrase(ulKey, Attribute.ul);
+        return KeyEventResult.handled;
+      }
+    }
     if (text.value.startsWith(olKeyPhrase) &&
         line.style.containsKey(Attribute.ol.key) == false) {
       _updateSelectionForKeyPhrase(olKeyPhrase, Attribute.ol);
-    } else if (text.value.startsWith(ulKeyPhrase) &&
-        line.style.containsKey(Attribute.ul.key) == false) {
-      _updateSelectionForKeyPhrase(ulKeyPhrase, Attribute.ul);
-    } else {
-      return KeyEventResult.ignored;
+      return KeyEventResult.handled;
     }
 
-    return KeyEventResult.handled;
+    return KeyEventResult.ignored;
   }
 
   KeyEventResult _handleTabKey(RawKeyEvent event) {
