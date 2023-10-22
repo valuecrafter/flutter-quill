@@ -756,9 +756,11 @@ class RawEditorState extends EditorState
     const olKeyPhrase = '1.';
     const ulKeyPhrase = '-';
 
-    if (text.value == olKeyPhrase) {
+    if (text.value.startsWith(olKeyPhrase) &&
+        line.style.containsKey(Attribute.ol.key) == false) {
       _updateSelectionForKeyPhrase(olKeyPhrase, Attribute.ol);
-    } else if (text.value == ulKeyPhrase) {
+    } else if (text.value.startsWith(ulKeyPhrase) &&
+        line.style.containsKey(Attribute.ul.key) == false) {
       _updateSelectionForKeyPhrase(ulKeyPhrase, Attribute.ul);
     } else {
       return KeyEventResult.ignored;
@@ -844,7 +846,7 @@ class RawEditorState extends EditorState
     controller
       ..formatSelection(attribute)
       // Remove the added newline.
-      ..replaceText(controller.selection.baseOffset + 1, 1, '', null);
+      ..replaceText(controller.selection.baseOffset, 1, '', null);
   }
 
   void _handleSelectionChanged(
