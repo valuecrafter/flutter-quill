@@ -1757,6 +1757,17 @@ class RawEditorState extends EditorState
     ExtendSelectionToNextWordBoundaryOrCaretLocationIntent: _makeOverridable(
         _ExtendSelectionOrCaretPositionAction(this, _nextWordBoundary)),
 
+    // Extend/Move selection for Mac
+    // if mac
+    if (isMacOS())
+      ExpandSelectionToLineBreakIntent: _makeOverridable(
+          _UpdateTextSelectionAction<ExpandSelectionToLineBreakIntent>(
+              this, true, _linebreak)),
+    if (isMacOS())
+      ExpandSelectionToDocumentBoundaryIntent: _makeOverridable(
+          _UpdateTextSelectionAction<ExpandSelectionToDocumentBoundaryIntent>(
+              this, true, _documentBoundary)),
+
     // Copy Paste
     SelectAllTextIntent: _makeOverridable(_SelectAllAction(this)),
     CopySelectionTextIntent: _makeOverridable(_CopySelectionAction(this)),
