@@ -1800,6 +1800,7 @@ class RawEditorState extends EditorState
 
   @override
   void performSelector(String selectorName) {
+    debugPrint('[performSelector] $selectorName ');
     final intent = intentForMacOSSelector(selectorName);
 
     if (intent != null) {
@@ -2207,6 +2208,7 @@ class _DeleteTextAction<T extends DirectionalTextEditingIntent>
 
   @override
   Object? invoke(T intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
     final selection = state.textEditingValue.selection;
     assert(selection.isValid);
 
@@ -2264,6 +2266,8 @@ class _UpdateTextSelectionAction<T extends DirectionalCaretMovementIntent>
 
   @override
   Object? invoke(T intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     final selection = state.textEditingValue.selection;
     assert(selection.isValid);
 
@@ -2352,6 +2356,8 @@ class _ExtendSelectionOrCaretPositionAction extends ContextAction<
   @override
   Object? invoke(ExtendSelectionToNextWordBoundaryOrCaretLocationIntent intent,
       [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     final selection = state.textEditingValue.selection;
     assert(selection.isValid);
 
@@ -2420,6 +2426,7 @@ class _UpdateTextSelectionToAdjacentLineAction<
 
   @override
   void invoke(T intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
     assert(state.textEditingValue.selection.isValid);
 
     final collapseSelection =
@@ -2466,6 +2473,8 @@ class _SelectAllAction extends ContextAction<SelectAllTextIntent> {
 
   @override
   Object? invoke(SelectAllTextIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     return Actions.invoke(
       context!,
       UpdateSelectionIntent(
@@ -2488,6 +2497,8 @@ class _CopySelectionAction extends ContextAction<CopySelectionTextIntent> {
 
   @override
   void invoke(CopySelectionTextIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     if (intent.collapseSelection) {
       state.cutSelection(intent.cause);
     } else {
@@ -2514,6 +2525,8 @@ class _HideSelectionToolbarAction
 
   @override
   void invoke(HideSelectionToolbarIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     state.hideToolbar();
   }
 
@@ -2528,6 +2541,8 @@ class _UndoKeyboardAction extends ContextAction<UndoTextIntent> {
 
   @override
   void invoke(UndoTextIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     if (state.controller.hasUndo) {
       state.controller.undo();
     }
@@ -2544,6 +2559,8 @@ class _RedoKeyboardAction extends ContextAction<RedoTextIntent> {
 
   @override
   void invoke(RedoTextIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     if (state.controller.hasRedo) {
       state.controller.redo();
     }
@@ -2578,6 +2595,8 @@ class _ToggleTextStyleAction extends Action<ToggleTextStyleIntent> {
 
   @override
   void invoke(ToggleTextStyleIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     final isActive = _isStyleActive(
         intent.attribute, state.controller.getSelectionStyle().attributes);
     state.controller.formatSelection(
@@ -2602,6 +2621,8 @@ class _IndentSelectionAction extends Action<IndentSelectionIntent> {
 
   @override
   void invoke(IndentSelectionIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     state.controller.indentSelection(intent.isIncrease);
   }
 
@@ -2621,6 +2642,8 @@ class _OpenSearchAction extends ContextAction<OpenSearchIntent> {
 
   @override
   Future invoke(OpenSearchIntent intent, [BuildContext? context]) async {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     if (context == null) {
       throw ArgumentError(
         'The context should not be null to use invoke() method',
@@ -2657,6 +2680,8 @@ class _ApplyHeaderAction extends Action<ApplyHeaderIntent> {
 
   @override
   void invoke(ApplyHeaderIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     final _attribute =
         _getHeaderValue() == intent.header ? Attribute.header : intent.header;
     state.controller.formatSelection(_attribute);
@@ -2696,6 +2721,8 @@ class _ApplyCheckListAction extends Action<ApplyCheckListIntent> {
 
   @override
   void invoke(ApplyCheckListIntent intent, [BuildContext? context]) {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     state.controller.formatSelection(_getIsToggled()
         ? Attribute.clone(Attribute.unchecked, null)
         : Attribute.unchecked);
@@ -2716,6 +2743,8 @@ class ApplyLinkAction extends Action<ApplyLinkIntent> {
 
   @override
   Object? invoke(ApplyLinkIntent intent) async {
+    debugPrint('[Action] ${runtimeType.toString()}');
+
     final initialTextLink = QuillTextLink.prepare(state.controller);
 
     final textLink = await showDialog<QuillTextLink>(
