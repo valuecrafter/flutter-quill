@@ -36,9 +36,6 @@ class _HomePageState extends State<HomePage> {
   Timer? _selectAllTimer;
   _SelectionType _selectionType = _SelectionType.none;
 
-  String _structure = "";
-  String _selectionText = "";
-
   @override
   void dispose() {
     _selectAllTimer?.cancel();
@@ -70,27 +67,6 @@ class _HomePageState extends State<HomePage> {
         selection: const TextSelection.collapsed(offset: 0),
       );
     }
-
-    _controller?.changes.listen((event) {
-      setState(() {
-        // _structure = _controller?.document.toDelta().toString() ?? "error";
-        _structure = _controller?.document.root.toString() ?? "error";
-        _selectionText = _controller?.selection.toString() ?? "no selection";
-      });
-    });
-    _controller?.addListener(() {});
-
-    _controller?.onSelectionCompleted = () {
-      setState(() {
-        _selectionText = _controller?.selection.toString() ?? "no selection";
-      });
-    };
-
-    _controller?.onSelectionChanged = (textSelection) {
-      setState(() {
-        _selectionText = _controller?.selection.toString() ?? "no selection";
-      });
-    };
   }
 
   @override
@@ -356,32 +332,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Expanded(
               flex: 15,
-              child: Row(children: [
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: quillEditor,
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: Text(_structure),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: Text(_selectionText),
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: quillEditor,
+              ),
             ),
             kIsWeb
                 ? Expanded(
