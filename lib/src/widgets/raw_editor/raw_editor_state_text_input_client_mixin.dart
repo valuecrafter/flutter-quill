@@ -125,7 +125,10 @@ mixin RawEditorStateTextInputClientMixin on EditorState
       return;
     }
 
-    final value = textEditingValue;
+    // textInput은 delta-quill 에서 사용되는 '\n'를 무시하기 위해 맨 마지막 char를 제거하고 공유함.
+    final value = textEditingValue.copyWith(
+        text: textEditingValue.text
+            .substring(0, textEditingValue.text.length - 1));
 
     // Since we don't keep track of the composing range in value provided
     // by the Controller we need to add it here manually before comparing
