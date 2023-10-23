@@ -436,7 +436,8 @@ class Document {
     }
 
     final delta = node.toDelta();
-    return delta.length == 1 &&
+    return node.style.isEmpty &&
+        delta.length == 1 &&
         delta.first.data == '\n' &&
         delta.first.key == 'insert';
   }
