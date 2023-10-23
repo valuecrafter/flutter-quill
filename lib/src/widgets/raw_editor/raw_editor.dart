@@ -758,7 +758,9 @@ class RawEditorState extends EditorState
     const checkedKeyPhrase = '[]';
 
     bool isKeyPhrase(String phrase) {
-      return text.value.startsWith(phrase) && child.offset == phrase.length;
+      return text.value.startsWith(phrase) &&
+          child.offset == phrase.length &&
+          controller.selection.baseOffset == controller.selection.extentOffset;
     }
 
     for (final ulKey in ulKeyPhrase) {
@@ -772,6 +774,20 @@ class RawEditorState extends EditorState
       return KeyEventResult.handled;
     } else if (isKeyPhrase(checkedKeyPhrase)) {
       _updateSelectionForKeyPhrase(checkedKeyPhrase, Attribute.unchecked);
+      return KeyEventResult.handled;
+    }
+
+    const h1KeyPhrase = '#';
+    const h2KeyPhrase = '##';
+    const h3KeyPhrase = '###';
+    if (isKeyPhrase(h3KeyPhrase)) {
+      _updateSelectionForKeyPhrase(h3KeyPhrase, Attribute.h3);
+      return KeyEventResult.handled;
+    } else if (isKeyPhrase(h2KeyPhrase)) {
+      _updateSelectionForKeyPhrase(h2KeyPhrase, Attribute.h2);
+      return KeyEventResult.handled;
+    } else if (isKeyPhrase(h1KeyPhrase)) {
+      _updateSelectionForKeyPhrase(h1KeyPhrase, Attribute.h1);
       return KeyEventResult.handled;
     }
 
@@ -850,12 +866,12 @@ class RawEditorState extends EditorState
 
   void _updateSelectionForKeyPhrase(String phrase, Attribute attribute) {
     controller.replaceText(controller.selection.baseOffset - phrase.length,
-        phrase.length, '\n', null);
+        phrase.length, '\n' * phrase.length, null);
     _moveCursor(-phrase.length);
     controller
       ..formatSelection(attribute)
       // Remove the added newline.
-      ..replaceText(controller.selection.baseOffset, 1, '', null);
+      ..replaceText(controller.selection.baseOffset, phrase.length, '', null);
   }
 
   void _handleSelectionChanged(
