@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show kIsWeb, TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,6 +30,18 @@ class QuillPressedKeys extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void _updatePhysicalPressedKeys(Set<PhysicalKeyboardKey> pressedKeys) {
+    final meta = pressedKeys.contains(PhysicalKeyboardKey.metaLeft) ||
+        pressedKeys.contains(PhysicalKeyboardKey.metaRight);
+    final control = pressedKeys.contains(PhysicalKeyboardKey.controlLeft) ||
+        pressedKeys.contains(PhysicalKeyboardKey.controlRight);
+    if (_metaPressed != meta || _controlPressed != control) {
+      _metaPressed = meta;
+      _controlPressed = control;
+      notifyListeners();
+    }
+  }
 }
 
 class QuillKeyboardListener extends StatefulWidget {
@@ -42,10 +56,24 @@ class QuillKeyboardListener extends StatefulWidget {
 
 class QuillKeyboardListenerState extends State<QuillKeyboardListener> {
   final QuillPressedKeys _pressedKeys = QuillPressedKeys();
+  bool _isWeb() {
+    return kIsWeb;
+  }
+
+  bool _isMacOS([TargetPlatform? targetPlatform]) {
+    if (_isWeb()) return false;
+    targetPlatform ??= defaultTargetPlatform;
+    return TargetPlatform.macOS == targetPlatform;
+  }
 
   bool _keyEvent(KeyEvent event) {
-    _pressedKeys
-        ._updatePressedKeys(HardwareKeyboard.instance.logicalKeysPressed);
+    if (_isMacOS()) {
+      _pressedKeys._updatePhysicalPressedKeys(
+          HardwareKeyboard.instance.physicalKeysPressed);
+    } else {
+      _pressedKeys
+          ._updatePressedKeys(HardwareKeyboard.instance.logicalKeysPressed);
+    }
     return false;
   }
 
@@ -53,8 +81,14 @@ class QuillKeyboardListenerState extends State<QuillKeyboardListener> {
   void initState() {
     super.initState();
     HardwareKeyboard.instance.addHandler(_keyEvent);
-    _pressedKeys
-        ._updatePressedKeys(HardwareKeyboard.instance.logicalKeysPressed);
+
+    if (_isMacOS()) {
+      _pressedKeys._updatePhysicalPressedKeys(
+          HardwareKeyboard.instance.physicalKeysPressed);
+    } else {
+      _pressedKeys
+          ._updatePressedKeys(HardwareKeyboard.instance.logicalKeysPressed);
+    }
   }
 
   @override
